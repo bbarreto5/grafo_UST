@@ -2,6 +2,8 @@ class Vertice:
     def __init__(self,clave):
         self.id = clave
         self.conectadoA = {}
+        self.color = 'blanco'
+        self.dist = 10000
 
     def agregarVecino(self,vecino,ponderacion=0):
         self.conectadoA[vecino] = ponderacion
@@ -11,6 +13,18 @@ class Vertice:
 
     def obtenerConexiones(self):
         return self.conectadoA.keys()
+
+    def obtenerColor(self):
+        return self.color
+    
+    def obtenerDistancia(self):
+        return self.dist
+
+    def asignarDistancia(self, dist):
+        self.dist = dist
+
+    def asignarColor(self,color):
+        self.color = color 
 
     def obtenerId(self):
         return self.id
@@ -51,6 +65,63 @@ class Grafo:
     def __iter__(self):
         return iter(self.listaVertices.values())
 
+class ColaPrioridad:
+    def __init__(self):
+        self.listaMonticulo = [0]
+        self.tamanoActual = 0
+    
+    def infiltArriba(self,i):
+        while i // 2 > 0:
+            if self.listaMonticulo[i] < self.listaMonticulo[i // 2]:
+                tmp = self.listaMonticulo[i // 2]
+                self.listaMonticulo[i // 2] = self.listaMonticulo[i]
+                self.listaMonticulo[i] = tmp
+            i = i // 2
+    
+    def insertar(self,k):
+        self.listaMonticulo.append(k)
+        self.tamanoActual = self.tamanoActual + 1
+        self.infiltArriba(self.tamanoActual)
+    
+    def infiltAbajo(self,i):
+        while (i * 2) <= self.tamanoActual:
+            hm = self.hijoMin(i)
+            if self.listaMonticulo[i] > self.listaMonticulo[hm]:
+                tmp = self.listaMonticulo[i]
+                self.listaMonticulo[i] = self.listaMonticulo[hm]
+                self.listaMonticulo[hm] = tmp
+            i = hm
+
+    def hijoMin(self,i):
+        if i * 2 + 1 > self.tamanoActual:
+            return i * 2
+        else:
+            if self.listaMonticulo[i*2] < self.listaMonticulo[i*2+1]:
+                return i * 2
+            else:
+                return i * 2 + 1
+    
+    def eliminarMin(self):
+        valorSacado = self.listaMonticulo[1]
+        self.listaMonticulo[1] = self.listaMonticulo[self.tamanoActual]
+        self.tamanoActual = self.tamanoActual - 1
+        self.listaMonticulo.pop()
+        self.infiltAbajo(1)
+        return valorSacado
+    
+    def construirMonticulo(self,unaLista):
+        i = len(unaLista) // 2
+        self.tamanoActual = len(unaLista)
+        self.listaMonticulo = [0] + unaLista[:]
+        while (i > 0):
+            self.infiltAbajo(i)
+            i = i - 1
+
+    def decrementarClave(verticeSiguiente,nuevoCosto):
+
+
+
+
 
 def matriz_adyacencia(grafo):
     n = len(grafo.listaVertices)
@@ -72,6 +143,7 @@ def lista_adyacencia(grafo):
             l[v.obtenerId()][vv.id] = v.obtenerPonderacion(vv)
     return l
 
+"""
 g = Grafo()
 
 for i in range(6):
@@ -98,3 +170,4 @@ print ( m_a)
 
 l_a = lista_adyacencia(g)
 print( l_a )
+"""
