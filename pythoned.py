@@ -51,12 +51,31 @@ class Grafo:
     def __iter__(self):
         return iter(self.listaVertices.values())
 
+
+def matriz_adyacencia(grafo):
+    n = len(grafo.listaVertices)
+    m = [0]* n
+    for f in range(0,n,1):
+        m[f]=[0]*n
+    for v in grafo:
+        for vv in [x for x in v.conectadoA]:
+            m[v.obtenerId()][vv.id] = v.obtenerPonderacion(vv)
+    return m
+
+def lista_adyacencia(grafo):
+    n = len(grafo.listaVertices)
+    l = [0]* n
+    for f in range(0,n,1):
+        l[f]={}
+    for v in grafo:
+        for vv in [x for x in v.conectadoA]:
+            l[v.obtenerId()][vv.id] = v.obtenerPonderacion(vv)
+    return l
+
 g = Grafo()
 
 for i in range(6):
     g.agregarVertice(i)
-
-print ( g.listaVertices )
 
 g.agregarArista(0,1,5)
 g.agregarArista(0,5,2)
@@ -68,6 +87,14 @@ g.agregarArista(4,0,1)
 g.agregarArista(5,4,8)
 g.agregarArista(5,2,1)
 
+print ( g.listaVertices )
+
 for v in g:
     for w in v.obtenerConexiones():
         print("( %s , %s )" % (v.obtenerId(), w.obtenerId()))
+
+m_a = matriz_adyacencia(g)
+print ( m_a)
+
+l_a = lista_adyacencia(g)
+print( l_a )
