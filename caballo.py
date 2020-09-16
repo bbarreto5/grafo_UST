@@ -1,5 +1,4 @@
-
-
+from pythoned import Grafo
 
 def grafoDelCaballo(tamanoTablero):
     grafoCbllo = Grafo()
