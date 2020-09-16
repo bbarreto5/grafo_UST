@@ -4,9 +4,13 @@ class Vertice:
         self.conectadoA = {}
         self.color = 'blanco'
         self.dist = 10000
+        self.predesesor = None 
 
     def agregarVecino(self,vecino,ponderacion=0):
         self.conectadoA[vecino] = ponderacion
+
+    def asignarPredecesor(self, pred):
+        self.predesesor = pred
 
     def __str__(self):
         return str(self.id) + ' conectadoA: ' + str([x.id for x in self.conectadoA])
@@ -70,6 +74,12 @@ class ColaPrioridad:
         self.listaMonticulo = [0]
         self.tamanoActual = 0
     
+    def estaVacia(self):
+        if len( self.listaMonticulo ) <= 1:
+            return True
+        else:
+            return False
+
     def infiltArriba(self,i):
         while i // 2 > 0:
             if self.listaMonticulo[i] < self.listaMonticulo[i // 2]:
@@ -86,7 +96,7 @@ class ColaPrioridad:
     def infiltAbajo(self,i):
         while (i * 2) <= self.tamanoActual:
             hm = self.hijoMin(i)
-            if self.listaMonticulo[i] > self.listaMonticulo[hm]:
+            if self.listaMonticulo[i][0] > self.listaMonticulo[hm][0]:
                 tmp = self.listaMonticulo[i]
                 self.listaMonticulo[i] = self.listaMonticulo[hm]
                 self.listaMonticulo[hm] = tmp
@@ -96,7 +106,7 @@ class ColaPrioridad:
         if i * 2 + 1 > self.tamanoActual:
             return i * 2
         else:
-            if self.listaMonticulo[i*2] < self.listaMonticulo[i*2+1]:
+            if self.listaMonticulo[i*2][0] < self.listaMonticulo[i*2+1][0]:
                 return i * 2
             else:
                 return i * 2 + 1
@@ -117,7 +127,20 @@ class ColaPrioridad:
             self.infiltAbajo(i)
             i = i - 1
 
-    def decrementarClave(verticeSiguiente,nuevoCosto):
+    def decrementarClave(self, verticeSiguiente,nuevoCosto):
+        print("")
+        print("----------------------------------------------")
+        print ( self.listaMonticulo )
+        for x in self.listaMonticulo:
+            if x != 0 and x[1].obtenerId() == verticeSiguiente.obtenerId():
+                self.listaMonticulo.remove(x)
+                break
+
+        self.listaMonticulo.insert(1,(nuevoCosto, verticeSiguiente))
+        print("----------------------------------------------")
+        print ( self.listaMonticulo )
+        print( verticeSiguiente )
+        print( nuevoCosto )
 
 
 
